@@ -109,25 +109,32 @@ export function useNotebookChat({ notebookId, sources, notes, contextSelections 
     }
   })
 
-  // Delete session mutation
-  const deleteSessionMutation = useMutation({
-    mutationFn: (sessionId: string) =>
-      chatApi.deleteSession(sessionId),
-    onSuccess: (_, deletedId) => {
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.notebookChatSessions(notebookId)
-      })
-      if (currentSessionId === deletedId) {
-        setCurrentSessionId(null)
-        setMessages([])
-      }
-      toast.success(t.chat.sessionDeleted)
-    },
-    onError: (err: unknown) => {
-      const error = err as { response?: { data?: { detail?: string } }, message?: string };
-      toast.error(t(getApiErrorKey(error.response?.data?.detail || error.message, 'apiErrors.failedToDeleteSession')))
+// Delete session mutation
+const deleteSessionMutation = useMutation({
+  mutationFn: (sessionId: string) =>
+    chatApi.deleteSession(sessionId),
+  onSuccess: async (_, deletedId) => {  
+    
+    if (currentSessionId === deletedId) {
+      setCurrentSessionId(null)
+      setMessages([])
     }
-  })
+    
+    
+    await queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.notebookChatSessions(notebookId)
+    })
+    
+    
+    await refetchSessions()
+    
+    toast.success(t.chat.sessionDeleted)
+  },
+  onError: (err: unknown) => {
+    const error = err as { response?: { data?: { detail?: string } }, message?: string };
+    toast.error(t(getApiErrorKey(error.response?.data?.detail || error.message, 'apiErrors.failedToDeleteSession')))
+  }
+})
 
   // Build context from sources and notes based on user selections
   const buildContext = useCallback(async () => {
