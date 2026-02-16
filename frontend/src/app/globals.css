@@ -1,10 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
 @theme inline {
---font-sans: "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+/* Font configuration: Using Segoe UI as primary font */
+--font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 --font-mono: var(--font-geist-mono);
-
 --color-background: var(--background);
 --color-foreground: var(--foreground);
 --color-sidebar-ring: var(--sidebar-ring);
@@ -41,110 +40,104 @@
 --radius-lg: var(--radius);
 --radius-xl: calc(var(--radius) + 4px);
 }
-
 :root {
---radius: 1rem;
+/* General Layout Settings */
+--radius: 0.65rem;
+/* Main Background: Dark Blue (#1f3044) /
 --background: oklch(0.281 0.039 250.7);
+/ Main Text: White (#ffffff) */
 --foreground: oklch(1 0 0);
---card: oklch(1 0 0 / 0.05);
+/* Surface Colors (Cards & Popovers) */
+--card: oklch(0.281 0.039 250.7);
 --card-foreground: oklch(1 0 0);
---popover: oklch(0.23 0.03 250.7 / 0.9);
+--popover: oklch(0.23 0.03 250.7);
 --popover-foreground: oklch(1 0 0);
+/* Action Colors: Accent Orange (#f97316) */
 --primary: oklch(0.701 0.191 45.3);
 --primary-foreground: oklch(1 0 0);
---secondary: oklch(1 0 0 / 0.1);
+/* Secondary & Muted Elements */
+--secondary: oklch(0.35 0.05 250.7);
 --secondary-foreground: oklch(1 0 0);
---muted: oklch(1 0 0 / 0.1);
+--muted: oklch(0.35 0.05 250.7);
 --muted-foreground: oklch(0.8 0.02 250.7);
---accent: oklch(1 0 0 / 0.1);
+--accent: oklch(0.35 0.05 250.7);
 --accent-foreground: oklch(1 0 0);
+/* Feedback and Borders */
 --destructive: oklch(0.577 0.245 27.325);
---border: oklch(1 0 0 / 0.1);
---input: oklch(1 0 0 / 0.1);
+--border: oklch(0.38 0.04 250.7);
+--input: oklch(0.38 0.04 250.7);
 --ring: oklch(0.701 0.191 45.3);
---sidebar: oklch(0.23 0.03 250.7 / 0.5);
+/* Sidebar Specific Styling /
+--sidebar: oklch(0.23 0.03 250.7); / Slightly darker navy for sidebar */
 --sidebar-foreground: oklch(1 0 0);
 --sidebar-primary: oklch(0.701 0.191 45.3);
 --sidebar-primary-foreground: oklch(1 0 0);
---sidebar-accent: oklch(1 0 0 / 0.1);
+--sidebar-accent: oklch(0.35 0.05 250.7);
 --sidebar-accent-foreground: oklch(1 0 0);
---sidebar-border: oklch(1 0 0 / 0.05);
+--sidebar-border: oklch(0.32 0.04 250.7);
 --sidebar-ring: oklch(0.701 0.191 45.3);
 }
-
+/* Consistent theme for Dark Mode /
 .dark {
---background: oklch(0.2 0.03 250.7);
+--background: oklch(0.2 0.03 250.7); / Deeper navy for dark mode */
 --foreground: oklch(1 0 0);
---card: oklch(1 0 0 / 0.03);
---sidebar: oklch(0.18 0.03 250.7 / 0.6);
+--card: oklch(0.2 0.03 250.7);
+--card-foreground: oklch(1 0 0);
+--primary: oklch(0.701 0.191 45.3);
+--sidebar: oklch(0.18 0.03 250.7);
+--border: oklch(1 0 0 / 15%);
 }
-
 @layer base {
-
 {
-@apply border-border;
+@apply border-border outline-ring/50;
 }
-
 html {
 @apply antialiased;
 }
-
 body {
-@apply bg-background text-foreground transition-colors duration-500;
-background-image: radial-gradient(circle at top right, oklch(0.701 0.191 45.3 / 0.05), transparent 400px);
-background-attachment: fixed;
+/* Apply custom navy background and white text globally */
+@apply bg-background text-foreground transition-colors;
+font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
-
+/* Theme inheritance for Radix and Overlay components */
 .dark {
 color-scheme: dark;
 }
-
+:root {
+color-scheme: light;
+}
+[data-radix-popper-content-wrapper] {
+@apply z-50;
+}
+/* Sidebar Component Styling */
 .app-sidebar {
 background-color: var(--sidebar);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-border-right: 1px solid var(--sidebar-border);
+color: var(--sidebar-foreground);
+border-color: var(--sidebar-border);
 }
-
+/* Animated Sidebar Menu Items */
 .sidebar-menu-item {
-@apply transition-all duration-300 rounded-xl mx-2;
+@apply transition-all duration-200 ease-out;
 }
-
 .sidebar-menu-item:hover {
+@apply scale-[1.02];
 background-color: var(--sidebar-accent) !important;
-@apply translate-x-1;
+box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
-
-.card, [class*="card"] {
-background-color: var(--card);
-backdrop-filter: blur(16px) saturate(180%);
--webkit-backdrop-filter: blur(16px) saturate(180%);
-border: 1px solid oklch(1 0 0 / 0.08);
-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-@apply transition-all duration-300 rounded-2xl;
-}
-
+/* Card Hover Effects with brand colors */
 .card-hover {
-@apply transition-all duration-300 cursor-pointer;
+@apply transition-all duration-200 cursor-pointer;
 }
-
 .card-hover:hover {
-background-color: oklch(1 0 0 / 0.08) !important;
-border-color: oklch(0.701 0.191 45.3 / 0.3);
-transform: translateY(-5px);
-box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+background-color: var(--secondary) !important;
+border-color: var(--primary); /* Orange border on hover */
+transform: translateY(-2px);
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
-
-button:not([class*="destructive"]), .btn-primary {
-@apply transition-all duration-200 active:scale-95 shadow-lg;
-box-shadow: 0 4px 12px oklch(0.701 0.191 45.3 / 0.2);
-}
-
-input, select, textarea {
-@apply bg-white/5 border-white/10 backdrop-blur-sm focus:ring-2 focus:ring-primary/30 transition-all rounded-lg;
-}
-
 .clickable-card {
+cursor: pointer !important;
+}
+.clickable-card * {
 cursor: pointer !important;
 }
 }
